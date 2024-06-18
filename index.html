@@ -3,11 +3,32 @@
     <head>
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+        <link rel="stylesheet" href="styles.css">
+        <title>solving fizzbuzz with a neural network</title>
     </head>
     <body>
         <h1>solving fizzbuzz with a neural network</h1>
         <p id="status">training model...</p>
-        <ul id="results"></ul>
+        <table id="train-stats">
+            <tr>
+                <th>epoch</th>
+                <th>loss</th>
+                <th>accuracy</th>
+            </tr>
+            <tr>
+                <td id="epoch">0</td>
+                <td id="loss">0</td>
+                <td id="accuracy">0</td>
+            </tr>
+        </table>
+        <p id="inference-text">inference results (incorrect inferences in <span class="incorrect">purple</span>):</p>
+        <pre><code id="results"></code></pre>
+        <div id="tester">
+            <br><br>
+            <input placeholder="test a number" type="number" min="0" max="65535" id="number"><button onclick="testNumber()">test</button>
+            <pre><code id="test-inference"></code></pre>            
+        </div>
         <script src="nn.js"></script>
+        <footer>powered by <a href="https://www.tensorflow.org/js">tf.js</a> and <a href="https://watercss.kognise.dev/">water.css</a> | thrown together by <a href="https://jierueichang.github.io">jieruei chang @knosmos</a></footer>
     </body>
 </html>
