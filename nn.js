@@ -43,21 +43,9 @@ for (let i = 101; i < 4096; i++) {
 }
 
 // train model
-function onEpochEnd(epoch, logs) {
-    document.getElementById("epoch").innerHTML = (epoch + 1) + "/1000";
-    document.getElementById("loss").innerHTML = logs.loss;
-    document.getElementById("accuracy").innerHTML = logs.acc;
-
-    console.log(`epoch ${epoch + 1}/1000: ${logs.loss}, ${logs.acc}`);
-}
-
-model.fit(tf.tensor(x), tf.tensor(y), {
-    epochs: 1000,
-    batchSize: 256,
-    callbacks: {onEpochEnd}
-}).then(info => {
-    // test model
+function testModel() {
     let correct = 0;
+    document.getElementById("results").innerHTML = "";
     for (let i = 1; i < 101; i++) {
         let a = [];
         for (let j = 0; j < INPUT_SIZE; j++) {
@@ -77,6 +65,33 @@ model.fit(tf.tensor(x), tf.tensor(y), {
         console.log(i, res);
         document.getElementById("results").innerHTML += `<span class=${[pred_correct ? "correct" : "incorrect"]}>${res}</span>${i < 100 ? ", " : ""}`;
     }
+    return correct;
+}
+
+function onEpochEnd(epoch, logs) {
+    document.getElementById("epoch").innerHTML = (epoch + 1) + "/1000";
+    document.getElementById("loss").innerHTML = logs.loss;
+    document.getElementById("accuracy").innerHTML = logs.acc;
+
+    console.log(`epoch ${epoch + 1}/1000: ${logs.loss}, ${logs.acc}`);
+
+    // test model
+    if ((epoch + 1) % 100 != 0) {
+        return;
+    }
+    let correct = testModel();
+    document.getElementById("inference-text").style.display = "block";
+    document.getElementById("status").innerHTML = `training model... current performance on test set: ${correct}/100 correct`;
+    document.getElementById("results").style.opacity = "1";
+}
+
+model.fit(tf.tensor(x), tf.tensor(y), {
+    epochs: 1000,
+    batchSize: 256,
+    callbacks: {onEpochEnd}
+}).then(info => {
+    // test model
+    let correct = testModel();
     document.getElementById("inference-text").style.display = "block";
     document.getElementById("status").innerHTML = `training complete: ${correct}/100 correct`;
     document.getElementById("results").style.opacity = "1";
